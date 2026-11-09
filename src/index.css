@@ -85,8 +85,8 @@ input:focus, select:focus { outline: 2px solid var(--azul); outline-offset: 0; b
 .etiqueta { display: inline-block; margin-left: 6px; font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #fff4dd; color: #8a5a00; vertical-align: middle; }
 
 /* Admin */
-.pestanas { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; }
-.pestanas button { font: inherit; font-weight: 600; padding: 10px 16px; border-radius: 999px; border: 1px solid var(--borde); background: var(--blanco); color: var(--marino); cursor: pointer; white-space: nowrap; }
+.pestanas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
+.pestanas button { font: inherit; font-size: 0.95rem; font-weight: 600; padding: 10px 6px; border-radius: 999px; border: 1px solid var(--borde); background: var(--blanco); color: var(--marino); cursor: pointer; white-space: nowrap; }
 .pestanas button.activa { background: var(--marino); color: var(--blanco); border-color: var(--marino); }
 
 .filtros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 12px; }
