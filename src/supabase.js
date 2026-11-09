@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
 // La clave "publishable/anon" es pública por diseño: la seguridad la ponen las reglas de la base de datos.
-const SUPABASE_URL = 'https://PENDIENTE.supabase.co'
-const SUPABASE_ANON_KEY = 'PENDIENTE'
+const SUPABASE_URL = 'https://kkvuhtechdabmkcbccvb.supabase.co'
+const SUPABASE_ANON_KEY = 'sb_publishable_xMY0ye6evAXJs_acd3XUhQ_MO7wuaIs'
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
