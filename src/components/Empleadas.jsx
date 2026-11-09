@@ -33,7 +33,7 @@ export default function Empleadas({ yo }) {
         <h2>Cómo dar de alta a una empleada nueva</h2>
         <ol className="pasos">
           <li>Envíale este enlace (por WhatsApp, por ejemplo): <strong className="enlace-app">{enlace}</strong></li>
-          <li>Ella pulsa <em>«Soy nueva: crear mi cuenta»</em> y pone su nombre, email y una contraseña.</li>
+          <li>Ella pulsa <em>«Soy nueva: crear mi cuenta»</em> y pone su nombre, su correo electrónico y una contraseña.</li>
           <li>Te aparecerá aquí abajo como <em>pendiente</em>. Pulsa <strong>Activar</strong> y ya podrá fichar.</li>
         </ol>
         <button className="btn" onClick={() => navigator.clipboard?.writeText(enlace)}>Copiar enlace</button>

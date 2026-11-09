@@ -27,13 +27,13 @@ export default function Acceso() {
           options: { data: { nombre: nombre.trim() }, emailRedirectTo: window.location.href.split('#')[0] },
         })
         if (error) throw error
-        if (!data.session) setAviso('Te hemos enviado un email para confirmar tu cuenta. Ábrelo y pulsa el enlace.')
+        if (!data.session) setAviso('Te hemos enviado un correo para confirmar tu cuenta. Ábrelo y pulsa el enlace.')
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: window.location.href.split('#')[0],
         })
         if (error) throw error
-        setAviso('Si el email está registrado, te llegará un correo para crear una contraseña nueva.')
+        setAviso('Si el correo electrónico está registrado, te llegará un correo para crear una contraseña nueva.')
       }
     } catch (err) {
       setError(mensajeError(err))
@@ -57,7 +57,7 @@ export default function Acceso() {
           </label>
         )}
         <label>
-          Email
+          Correo electrónico
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required />
         </label>
         {modo !== 'recuperar' && (

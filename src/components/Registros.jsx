@@ -65,7 +65,7 @@ export default function Registros() {
   }, [fichajes, nombreDe])
 
   function exportar() {
-    const filas = [['Empleada', 'Email', 'Fecha', 'Hora entrada', 'Hora salida', 'Horas trabajadas', 'Horas (decimal)', 'Corregido', 'Motivo corrección']]
+    const filas = [['Empleada', 'Correo electrónico', 'Fecha', 'Hora entrada', 'Hora salida', 'Horas trabajadas', 'Horas (decimal)', 'Corregido', 'Motivo corrección']]
     const emailDe = Object.fromEntries(perfiles.map((p) => [p.id, p.email]))
     for (const f of fichajes) {
       filas.push([
