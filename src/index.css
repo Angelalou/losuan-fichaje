@@ -117,3 +117,8 @@ input:focus, select:focus { outline: 2px solid var(--azul); outline-offset: 0; b
 .lista-empleadas li:last-child { border-bottom: none; }
 .lista-empleadas li div { display: flex; flex-direction: column; min-width: 0; }
 .lista-empleadas span { color: var(--suave); font-size: 0.85rem; overflow-wrap: anywhere; }
+
+.tarjeta-destacada { border-color: var(--verde); background: var(--verde-claro); }
+.plegable summary { cursor: pointer; font-weight: 700; color: var(--marino); padding: 4px 0; }
+.plegable[open] summary { margin-bottom: 8px; }
+.explicacion { margin: 12px 0 0; line-height: 1.45; }

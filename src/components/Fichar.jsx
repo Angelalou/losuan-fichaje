@@ -74,6 +74,11 @@ export default function Fichar({ perfil }) {
         <button className={`btn-fichar ${abierto ? 'salida' : 'entrada'}`} onClick={fichar} disabled={enviando}>
           {enviando ? 'Guardando…' : abierto ? 'Fichar SALIDA' : 'Fichar ENTRADA'}
         </button>
+        <p className="nota explicacion">
+          {abierto
+            ? 'Cuando termines de trabajar, pulsa «Fichar SALIDA».'
+            : 'Pulsa «Fichar ENTRADA» al empezar a trabajar y «Fichar SALIDA» al terminar. Si haces varios servicios con descanso entre medias, ficha entrada y salida en cada uno.'}
+        </p>
         {error && <p className="error">{error}</p>}
 
         <div className="resumen">

@@ -29,21 +29,12 @@ export default function Empleadas({ yo }) {
 
   return (
     <div>
-      <section className="tarjeta">
-        <h2>Cómo dar de alta a una empleada nueva</h2>
-        <ol className="pasos">
-          <li>Envíale este enlace (por WhatsApp, por ejemplo): <strong className="enlace-app">{enlace}</strong></li>
-          <li>Ella pulsa <em>«Soy nueva: crear mi cuenta»</em> y pone su nombre, su correo electrónico y una contraseña.</li>
-          <li>Te aparecerá aquí abajo como <em>pendiente</em>. Pulsa <strong>Activar</strong> y ya podrá fichar.</li>
-        </ol>
-        <button className="btn" onClick={() => navigator.clipboard?.writeText(enlace)}>Copiar enlace</button>
-      </section>
-
       {error && <p className="error">{error}</p>}
 
       {pendientes.length > 0 && (
-        <section className="tarjeta">
-          <h2>Pendientes de activar</h2>
+        <section className="tarjeta tarjeta-destacada">
+          <h2>Pendientes de activar ({pendientes.length})</h2>
+          <p className="nota">Se han registrado en la app. Pulsa «Activar» para que puedan empezar a fichar.</p>
           <ul className="lista-empleadas">
             {pendientes.map((p) => (
               <li key={p.id}>
@@ -56,7 +47,8 @@ export default function Empleadas({ yo }) {
       )}
 
       <section className="tarjeta">
-        <h2>Equipo activo</h2>
+        <h2>Mi equipo ({activas.filter((p) => p.rol !== 'admin').length} {activas.filter((p) => p.rol !== 'admin').length === 1 ? 'empleada' : 'empleadas'})</h2>
+        <p className="nota">Estas personas ya pueden entrar en la app y fichar.</p>
         <ul className="lista-empleadas">
           {activas.map((p) => (
             <li key={p.id}>
@@ -66,6 +58,16 @@ export default function Empleadas({ yo }) {
           ))}
         </ul>
       </section>
+
+      <details className="tarjeta plegable">
+        <summary>¿Cómo añadir una empleada nueva?</summary>
+        <ol className="pasos">
+          <li>Envíale este enlace (por WhatsApp, por ejemplo): <strong className="enlace-app">{enlace}</strong></li>
+          <li>Ella pulsa <em>«Soy nueva: crear mi cuenta»</em> y pone su nombre, su correo electrónico y una contraseña.</li>
+          <li>Te aparecerá arriba, en <em>«Pendientes de activar»</em>. Pulsa <strong>Activar</strong> y ya podrá fichar.</li>
+        </ol>
+        <button className="btn" onClick={() => navigator.clipboard?.writeText(enlace)}>Copiar enlace</button>
+      </details>
     </div>
   )
 }
