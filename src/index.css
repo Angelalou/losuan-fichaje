@@ -63,10 +63,10 @@ input:focus, select:focus { outline: 2px solid var(--azul); outline-offset: 0; b
 /* Fichar */
 .fichar { max-width: 520px; margin: 0 auto; }
 .saludo { font-size: 1.4rem; font-weight: 700; color: var(--marino); margin: 0; }
-.fecha-hoy { color: var(--suave); margin: 4px 0 18px; text-transform: capitalize; }
+.fecha-hoy { color: var(--suave); margin: 4px 0 18px; }
+.fecha-hoy::first-letter { text-transform: uppercase; }
 .estado { font-weight: 600; color: var(--suave); }
 .estado-dentro { color: var(--verde); }
-.cronometro { font-size: 2.6rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--marino); margin: 4px 0 18px; }
 .btn-fichar { width: 100%; min-height: 96px; font: inherit; font-size: 1.5rem; font-weight: 800; letter-spacing: 0.02em; border: none; border-radius: 18px; color: var(--blanco); cursor: pointer; box-shadow: 0 6px 16px rgba(13, 37, 87, 0.18); }
 .btn-fichar.entrada { background: linear-gradient(135deg, var(--verde), #7bb84a); }
 .btn-fichar.salida { background: linear-gradient(135deg, var(--azul), var(--marino)); }

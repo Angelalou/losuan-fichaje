@@ -65,7 +65,7 @@ export default function Registros() {
   }, [fichajes, nombreDe])
 
   function exportar() {
-    const filas = [['Empleada', 'Correo electrónico', 'Fecha', 'Hora entrada', 'Hora salida', 'Horas trabajadas', 'Horas (decimal)', 'Corregido', 'Motivo corrección']]
+    const filas = [['Empleada', 'Correo electrónico', 'Fecha', 'Hora inicio', 'Hora fin', 'Horas trabajadas', 'Horas (decimal)', 'Corregido', 'Motivo corrección']]
     const emailDe = Object.fromEntries(perfiles.map((p) => [p.id, p.email]))
     for (const f of fichajes) {
       filas.push([
@@ -73,9 +73,9 @@ export default function Registros() {
         emailDe[f.user_id] || '',
         fmtFechaCorta(f.entrada),
         fmtHora(f.entrada),
-        f.salida ? fmtHora(f.salida) : 'Sin salida',
-        fmtDuracion(duracionMs(f)),
-        horasDecimales(duracionMs(f)),
+        f.salida ? fmtHora(f.salida) : 'Sin fichar',
+        f.salida ? fmtDuracion(duracionMs(f)) : '',
+        f.salida ? horasDecimales(duracionMs(f)) : '',
         f.manual ? 'Sí' : 'No',
         f.motivo || '',
       ])
@@ -143,7 +143,7 @@ export default function Registros() {
           <div className="tabla-scroll">
             <table className="tabla">
               <thead>
-                <tr><th>Fecha</th><th>Empleada</th><th>Entrada</th><th>Salida</th><th>Horas</th><th></th></tr>
+                <tr><th>Fecha</th><th>Empleada</th><th>Inicio</th><th>Fin</th><th>Horas</th><th></th></tr>
               </thead>
               <tbody>
                 {fichajes.map((f) => (
@@ -151,9 +151,9 @@ export default function Registros() {
                     <td>{fmtFecha(f.entrada)}</td>
                     <td>{nombreDe(f.user_id)}</td>
                     <td>{fmtHora(f.entrada)}</td>
-                    <td>{f.salida ? fmtHora(f.salida) : <em>en curso</em>}</td>
+                    <td>{f.salida ? fmtHora(f.salida) : <em>pendiente</em>}</td>
                     <td>
-                      {fmtDuracion(duracionMs(f))}
+                      {f.salida ? fmtDuracion(duracionMs(f)) : '—'}
                       {f.manual && <span className="etiqueta" title={f.motivo || ''}>corregido</span>}
                     </td>
                     <td><button className="enlace" onClick={() => setEditando(f)}>Corregir</button></td>
@@ -205,8 +205,8 @@ function EditarFichaje({ fichaje, perfiles, nombreDe, cerrar, guardado }) {
     e.preventDefault()
     setError('')
     if (nuevo && !userId) return setError('Elige la empleada.')
-    if (!entrada) return setError('Indica la hora de entrada.')
-    if (salida && new Date(salida) <= new Date(entrada)) return setError('La salida tiene que ser posterior a la entrada.')
+    if (!entrada) return setError('Indica la hora de inicio.')
+    if (salida && new Date(salida) <= new Date(entrada)) return setError('La hora de fin tiene que ser posterior a la de inicio.')
     if (!motivo.trim()) return setError('Escribe el motivo de la corrección.')
     setGuardando(true)
     const params = {
@@ -238,16 +238,16 @@ function EditarFichaje({ fichaje, perfiles, nombreDe, cerrar, guardado }) {
           </label>
         )}
         <label>
-          Entrada
+          Inicio
           <input type="datetime-local" value={entrada} onChange={(e) => setEntrada(e.target.value)} required />
         </label>
         <label>
-          Salida
+          Fin
           <input type="datetime-local" value={salida} onChange={(e) => setSalida(e.target.value)} />
         </label>
         <label>
           Motivo de la corrección (obligatorio)
-          <input value={motivo} onChange={(e) => setMotivo(e.target.value)} placeholder="Ej.: se olvidó fichar la salida" required />
+          <input value={motivo} onChange={(e) => setMotivo(e.target.value)} placeholder="Ej.: se olvidó fichar el fin" required />
         </label>
         <p className="nota">Quedará registrado que este fichaje fue corregido por ti, cuándo y por qué.</p>
         {error && <p className="error">{error}</p>}

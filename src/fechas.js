@@ -8,9 +8,10 @@ export const fmtFechaCorta = (d) =>
 
 export const fmtHora = (d) => (d ? new Date(d).toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' }) : '—')
 
-export function duracionMs(f, ahora = Date.now()) {
-  const fin = f.salida ? new Date(f.salida).getTime() : ahora
-  return Math.max(0, fin - new Date(f.entrada).getTime())
+// Un fichaje sin fin todavía no cuenta horas
+export function duracionMs(f) {
+  if (!f.salida) return 0
+  return Math.max(0, new Date(f.salida).getTime() - new Date(f.entrada).getTime())
 }
 
 export function fmtDuracion(ms) {
@@ -18,12 +19,6 @@ export function fmtDuracion(ms) {
   const h = Math.floor(totalMin / 60)
   const m = totalMin % 60
   return `${h}h ${String(m).padStart(2, '0')}m`
-}
-
-export function fmtCronometro(ms) {
-  const s = Math.floor(ms / 1000)
-  const pad = (n) => String(n).padStart(2, '0')
-  return `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`
 }
 
 export const horasDecimales = (ms) => (ms / 3600000).toFixed(2).replace('.', ',')

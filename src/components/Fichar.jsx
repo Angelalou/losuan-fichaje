@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, mensajeError } from '../supabase'
-import { duracionMs, esHoy, fmtCronometro, fmtDuracion, fmtFecha, fmtHora } from '../fechas'
+import { duracionMs, esHoy, fmtDuracion, fmtFecha, fmtHora } from '../fechas'
 
 export default function Fichar({ perfil }) {
   const [fichajes, setFichajes] = useState([])
   const [cargando, setCargando] = useState(true)
   const [enviando, setEnviando] = useState(false)
   const [error, setError] = useState('')
-  const [ahora, setAhora] = useState(Date.now())
+  const [confirmacion, setConfirmacion] = useState('')
 
   const cargar = useCallback(async () => {
     const desde = new Date()
@@ -29,55 +29,52 @@ export default function Fichar({ perfil }) {
 
   const abierto = fichajes.find((f) => !f.salida)
 
-  useEffect(() => {
-    if (!abierto) return
-    const t = setInterval(() => setAhora(Date.now()), 1000)
-    return () => clearInterval(t)
-  }, [abierto])
-
   async function fichar() {
     setEnviando(true)
     setError('')
-    const { error } = await supabase.rpc(abierto ? 'fichar_salida' : 'fichar_entrada')
+    setConfirmacion('')
+    const esFin = !!abierto
+    const { data, error } = await supabase.rpc(esFin ? 'fichar_salida' : 'fichar_entrada')
     if (error) setError(mensajeError(error))
+    else setConfirmacion(esFin ? `FIN registrado a las ${fmtHora(data.salida)}. ¡Hasta la próxima!` : `INICIO registrado a las ${fmtHora(data.entrada)}.`)
     await cargar()
-    setAhora(Date.now())
     setEnviando(false)
   }
 
   if (cargando) return <div className="cargando">Cargando…</div>
 
   const hoy = fichajes.filter((f) => esHoy(f.entrada))
-  const totalHoy = hoy.reduce((s, f) => s + duracionMs(f, ahora), 0)
-  const hoyFecha = new Date(ahora)
+  const totalHoy = hoy.reduce((s, f) => s + duracionMs(f), 0)
+  const hoyFecha = new Date()
   const inicioMes = new Date(hoyFecha.getFullYear(), hoyFecha.getMonth(), 1)
-  const totalMes = fichajes.filter((f) => new Date(f.entrada) >= inicioMes).reduce((s, f) => s + duracionMs(f, ahora), 0)
+  const totalMes = fichajes.filter((f) => new Date(f.entrada) >= inicioMes).reduce((s, f) => s + duracionMs(f), 0)
 
   return (
     <div className="fichar">
       <section className="tarjeta centrado">
         <p className="saludo">Hola, {perfil.nombre.split(' ')[0] || 'compañera'}</p>
-        <p className="fecha-hoy">{new Date(ahora).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+        <p className="fecha-hoy">{hoyFecha.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
 
         {abierto ? (
           <>
-            <p className="estado estado-dentro">Trabajando desde las {fmtHora(abierto.entrada)}</p>
+            <p className="estado estado-dentro">Fichaste el INICIO a las {fmtHora(abierto.entrada)}</p>
             {!esHoy(abierto.entrada) && (
-              <p className="error">Esta entrada es del {fmtFecha(abierto.entrada)}. Si se te olvidó fichar la salida, avisa a Ángela para que lo corrija.</p>
+              <p className="error">Este inicio es del {fmtFecha(abierto.entrada)}. Si se te olvidó fichar el fin, avisa a Ángela para que lo corrija.</p>
             )}
-            <p className="cronometro">{fmtCronometro(duracionMs(abierto, ahora))}</p>
           </>
         ) : (
           <p className="estado">Ahora mismo no estás fichada</p>
         )}
 
+        {confirmacion && <p className="aviso">{confirmacion}</p>}
+
         <button className={`btn-fichar ${abierto ? 'salida' : 'entrada'}`} onClick={fichar} disabled={enviando}>
-          {enviando ? 'Guardando…' : abierto ? 'Fichar SALIDA' : 'Fichar ENTRADA'}
+          {enviando ? 'Guardando…' : abierto ? 'FIN' : 'INICIO'}
         </button>
         <p className="nota explicacion">
           {abierto
-            ? 'Cuando termines de trabajar, pulsa «Fichar SALIDA».'
-            : 'Pulsa «Fichar ENTRADA» al empezar a trabajar y «Fichar SALIDA» al terminar. Si haces varios servicios con descanso entre medias, ficha entrada y salida en cada uno.'}
+            ? 'Cuando termines de trabajar, pulsa «FIN».'
+            : 'Pulsa «INICIO» al empezar a trabajar y «FIN» al terminar. Si haces varios servicios con descanso entre medias, ficha inicio y fin en cada uno.'}
         </p>
         {error && <p className="error">{error}</p>}
 
@@ -97,10 +94,10 @@ export default function Fichar({ perfil }) {
               <li key={f.id}>
                 <div className="lf-fecha">{fmtFecha(f.entrada)}</div>
                 <div className="lf-horas">
-                  {fmtHora(f.entrada)} – {f.salida ? fmtHora(f.salida) : <em>en curso</em>}
+                  Inicio {fmtHora(f.entrada)} · Fin {f.salida ? fmtHora(f.salida) : <em>pendiente</em>}
                 </div>
                 <div className="lf-total">
-                  {fmtDuracion(duracionMs(f, ahora))}
+                  {f.salida ? fmtDuracion(duracionMs(f)) : '—'}
                   {f.manual && <span className="etiqueta" title={f.motivo || ''}>corregido</span>}
                 </div>
               </li>
