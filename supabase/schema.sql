@@ -19,7 +19,7 @@ create table if not exists public.fichajes (
   corregido_por uuid references public.profiles (id),
   corregido_en timestamptz,
   created_at timestamptz not null default now(),
-  constraint salida_posterior check (salida is null or salida > entrada)
+  constraint salida_posterior check (salida is null or salida >= entrada)
 );
 
 create index if not exists fichajes_user_entrada on public.fichajes (user_id, entrada desc);
