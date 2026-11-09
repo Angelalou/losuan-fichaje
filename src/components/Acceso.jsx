@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import logo from '../assets/logo-losuan.png'
 import { supabase, mensajeError } from '../supabase'
 
 export default function Acceso() {
@@ -46,7 +47,7 @@ export default function Acceso() {
 
   return (
     <div className="acceso">
-      <img src={`${import.meta.env.BASE_URL}logo.png`} alt="LOSUAN Limpiezas" className="acceso-logo" />
+      <img src={logo} alt="LOSUAN Limpiezas" className="acceso-logo" />
       <h1>Control horario</h1>
       <form className="tarjeta" onSubmit={enviar}>
         <h2>{titulos[modo]}</h2>
@@ -105,7 +106,7 @@ export function NuevaPassword({ alTerminar }) {
 
   return (
     <div className="acceso">
-      <img src={`${import.meta.env.BASE_URL}logo.png`} alt="LOSUAN Limpiezas" className="acceso-logo" />
+      <img src={logo} alt="LOSUAN Limpiezas" className="acceso-logo" />
       <form className="tarjeta" onSubmit={guardar}>
         <h2>Nueva contraseña</h2>
         <label>

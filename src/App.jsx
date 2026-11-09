@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import logo from './assets/logo-losuan.png'
 import { supabase } from './supabase'
 import Acceso, { NuevaPassword } from './components/Acceso'
 import Fichar from './components/Fichar'
@@ -79,7 +80,7 @@ function Marco({ perfil, salir, children }) {
   return (
     <div className="app">
       <header className="cabecera">
-        <img src={`${import.meta.env.BASE_URL}logo.png`} alt="LOSUAN Limpiezas" />
+        <img src={logo} alt="LOSUAN Limpiezas" />
         <div className="cabecera-usuario">
           <span>{perfil?.nombre || perfil?.email}</span>
           <button className="enlace" onClick={salir}>Salir</button>
