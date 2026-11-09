@@ -20,6 +20,8 @@ export function mensajeError(error) {
     'Signups not allowed': 'Ahora mismo no se pueden crear cuentas nuevas. Avisa a Ángela.',
     'Failed to fetch': 'No hay conexión a internet. Revisa la cobertura y vuelve a intentarlo.',
     'NetworkError': 'No hay conexión a internet. Revisa la cobertura y vuelve a intentarlo.',
+    'Error sending confirmation email': 'No se ha podido crear la cuenta todavía. Avisa a Ángela para que lo revise.',
+    'not authorized': 'No se ha podido crear la cuenta todavía. Avisa a Ángela para que lo revise.',
     'JWT expired': 'Tu sesión ha caducado. Sal y vuelve a entrar.',
     'should be different from the old password': 'La contraseña nueva tiene que ser distinta de la anterior.',
   }

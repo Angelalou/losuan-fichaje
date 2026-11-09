@@ -10,6 +10,7 @@ export default function Acceso() {
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
   const [aviso, setAviso] = useState('')
+  const [verPassword, setVerPassword] = useState(false)
 
   async function enviar(e) {
     e.preventDefault()
@@ -19,6 +20,9 @@ export default function Acceso() {
     try {
       if (modo === 'entrar') {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error?.message?.includes('Invalid login credentials')) {
+          throw new Error('Correo electrónico o contraseña incorrectos. Si todavía no te has registrado, pulsa «Soy nueva: crear mi cuenta».')
+        }
         if (error) throw error
       } else if (modo === 'registro') {
         if (!nombre.trim()) throw new Error('Escribe tu nombre y apellidos.')
@@ -28,7 +32,7 @@ export default function Acceso() {
           options: { data: { nombre: nombre.trim() }, emailRedirectTo: window.location.href.split('#')[0] },
         })
         if (error) throw error
-        if (!data.session) setAviso('Te hemos enviado un correo para confirmar tu cuenta. Ábrelo y pulsa el enlace.')
+        if (!data.session) setAviso('Cuenta creada. Si al entrar te pide confirmar el correo y no te llega ningún mensaje, avisa a Ángela.')
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: window.location.href.split('#')[0],
@@ -63,15 +67,21 @@ export default function Acceso() {
         </label>
         {modo !== 'recuperar' && (
           <label>
-            Contraseña
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete={modo === 'entrar' ? 'current-password' : 'new-password'}
-              minLength={6}
-              required
-            />
+            {modo === 'registro' ? 'Elige una contraseña (mínimo 6 caracteres)' : 'Contraseña'}
+            <div className="campo-password">
+              <input
+                type={verPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete={modo === 'entrar' ? 'current-password' : 'new-password'}
+                minLength={6}
+                required
+              />
+              <button type="button" className="btn-ver" onClick={() => setVerPassword(!verPassword)}>
+                {verPassword ? 'Ocultar' : 'Ver'}
+              </button>
+            </div>
+            {modo === 'registro' && <span className="ayuda">Si el móvil te sugiere una contraseña, bórrala y escribe una que puedas recordar.</span>}
           </label>
         )}
         {error && <p className="error">{error}</p>}
@@ -80,9 +90,9 @@ export default function Acceso() {
           {cargando ? 'Un momento…' : titulos[modo]}
         </button>
         <div className="acceso-enlaces">
-          {modo !== 'entrar' && <button type="button" className="enlace" onClick={() => setModo('entrar')}>Ya tengo cuenta: entrar</button>}
-          {modo !== 'registro' && <button type="button" className="enlace" onClick={() => setModo('registro')}>Soy nueva: crear mi cuenta</button>}
-          {modo !== 'recuperar' && <button type="button" className="enlace" onClick={() => setModo('recuperar')}>He olvidado mi contraseña</button>}
+          {modo !== 'entrar' && <button type="button" className="enlace" onClick={() => { setModo('entrar'); setError(''); setAviso('') }}>Ya tengo cuenta: entrar</button>}
+          {modo !== 'registro' && <button type="button" className="btn btn-secundario" onClick={() => { setModo('registro'); setError(''); setAviso('') }}>Soy nueva: crear mi cuenta</button>}
+          {modo !== 'recuperar' && <button type="button" className="enlace" onClick={() => { setModo('recuperar'); setError(''); setAviso('') }}>He olvidado mi contraseña</button>}
         </div>
       </form>
     </div>
