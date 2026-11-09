@@ -11,17 +11,27 @@ export default function Acceso() {
   const [error, setError] = useState('')
   const [aviso, setAviso] = useState('')
   const [verPassword, setVerPassword] = useState(false)
+  const [sinCuenta, setSinCuenta] = useState(false)
+
+  function cambiarModo(m) {
+    setModo(m)
+    setError('')
+    setAviso('')
+    setSinCuenta(false)
+  }
 
   async function enviar(e) {
     e.preventDefault()
     setError('')
     setAviso('')
+    setSinCuenta(false)
     setCargando(true)
     try {
       if (modo === 'entrar') {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error?.message?.includes('Invalid login credentials')) {
-          throw new Error('Correo electrónico o contraseña incorrectos. Si todavía no te has registrado, pulsa «Soy nueva: crear mi cuenta».')
+          setSinCuenta(true)
+          throw new Error('Correo electrónico o contraseña incorrectos. Si todavía no te has registrado, primero tienes que crear tu cuenta.')
         }
         if (error) throw error
       } else if (modo === 'registro') {
@@ -56,10 +66,13 @@ export default function Acceso() {
       <form className="tarjeta" onSubmit={enviar}>
         <h2>{titulos[modo]}</h2>
         {modo === 'registro' && (
-          <label>
-            Nombre y apellidos
-            <input value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" required />
-          </label>
+          <>
+            <p className="nota">Rellena los tres datos y pulsa el botón «Crear mi cuenta» de abajo.</p>
+            <label>
+              Nombre y apellidos
+              <input value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" autoFocus required />
+            </label>
+          </>
         )}
         <label>
           Correo electrónico
@@ -85,14 +98,19 @@ export default function Acceso() {
           </label>
         )}
         {error && <p className="error">{error}</p>}
+        {sinCuenta && modo === 'entrar' && (
+          <button type="button" className="btn btn-secundario boton-crear" onClick={() => cambiarModo('registro')}>
+            Crear mi cuenta con este correo
+          </button>
+        )}
         {aviso && <p className="aviso">{aviso}</p>}
         <button className="btn btn-primario" disabled={cargando}>
           {cargando ? 'Un momento…' : titulos[modo]}
         </button>
         <div className="acceso-enlaces">
-          {modo !== 'entrar' && <button type="button" className="enlace" onClick={() => { setModo('entrar'); setError(''); setAviso('') }}>Ya tengo cuenta: entrar</button>}
-          {modo !== 'registro' && <button type="button" className="btn btn-secundario" onClick={() => { setModo('registro'); setError(''); setAviso('') }}>Soy nueva: crear mi cuenta</button>}
-          {modo !== 'recuperar' && <button type="button" className="enlace" onClick={() => { setModo('recuperar'); setError(''); setAviso('') }}>He olvidado mi contraseña</button>}
+          {modo !== 'entrar' && <button type="button" className="enlace" onClick={() => cambiarModo('entrar')}>Ya tengo cuenta: entrar</button>}
+          {modo !== 'registro' && <button type="button" className="btn btn-secundario" onClick={() => cambiarModo('registro')}>Soy nueva: crear mi cuenta</button>}
+          {modo !== 'recuperar' && <button type="button" className="enlace" onClick={() => cambiarModo('recuperar')}>He olvidado mi contraseña</button>}
         </div>
       </form>
     </div>
